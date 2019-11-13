@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <StartupObject>Nekara.Program</StartupObject>
+    <Configurations>Debug;Release</Configurations>
+    <ApplicationIcon />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Exceptions\" />
+    <Folder Include="Tests\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="System.AppContext" Version="4.1.0" />
+  </ItemGroup>
+
+</Project>
