@@ -1,0 +1,3 @@
+[submodule "TestingService"]
+	path = TestingService
+	url = https://dev.azure.com/mscoyote/PSharpLab/_git/TestingService
