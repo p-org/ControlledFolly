@@ -1,169 +1,179 @@
 
 #pragma once 
 #include "TestingServicesClient.h"
+#include "ControlledPromise.h"
 #include <folly/futures/Future.h>
 #include <folly/executors/ThreadedExecutor.h>
-
-
 
 using namespace folly;
 using namespace std;
 
-template <class T>
+template <typename T>
 class ControlledFuture {
 public:
-	Promise<T> p1;
-	folly::Future<T> fut = this->p1.getFuture();
-	folly::Future<Unit> temp_fut;
-	bool flag = false;
-	int count = 0;
+	// Promise<T> _promise;
+	ControlledPromise<T> _promise = ControlledPromise<T>();
+	folly::Future<T> _future = this->_promise._promise.getFuture();
+	Promise<T> _t_promise;
+	folly::Future<T> _t_future = this->_t_promise.getFuture();
+	bool _flag = false;
+	bool _flag_from_promise = false;
+	int _count = 0;
 
 	template <typename T2 = T>
 	ControlledFuture(typename std::enable_if<std::is_same<folly::Unit, T2>::value>::type* p = nullptr)
 	{
-		// this->fut = this->p1.getFuture();
+		// this->_future = this->_promise.getFuture();
 		// std::cout << "c1-called" << std::endl;
 	}
 
 	ControlledFuture()
 	{
-		TestingServicesClient* socket = Helpers::GetTestingServices();
-		socket->CreateThread();
-		this->flag = true;
+		/* TestingServicesClient* socket = Helpers::GetTestingServices();
+		socket->CreateThread(); */
+		this->_flag = true;
 	}
 
-	ControlledFuture(bool flag)
+	ControlledFuture(bool _flag)
 	{
 
 	}
 
 	template <typename T2 = T>
 	ControlledFuture<T2> via(folly::Executor::KeepAlive<> executor)&& {
-		ControlledFuture<T2> f1 = ControlledFuture<T2>(true);
-		f1.flag = this->flag;
-		f1.fut = (f1.fut).via(executor);
-		f1.temp_fut = (f1.temp_fut).via(executor);
-		return f1;
+		ControlledFuture<T2> _f1 = ControlledFuture<T2>(true);
+		_f1._flag = this->_flag;
+		_f1._flag_from_promise = this->_flag_from_promise;
+		_f1._future = (this->_future).via(executor);
+		_f1._t_future = (this->_t_future).via(executor);
+		return _f1;
 	}
 
 
 	template <typename R, typename... Args>
 	auto thenValue(R(&func)(Args...))&& {
-		ControlledFuture<R> f1 = ControlledFuture<R>(false);
-
-		if (this->flag)
+		ControlledFuture<R> _f1 = ControlledFuture<R>(false);
+		_f1._flag_from_promise = this->_flag_from_promise;
+		if (this->_flag)
 		{
-			this->count = Helpers::RandomInt();
-			f1.fut = move(this->fut).thenValue([&](T) {
-				TestingServicesClient* socket = Helpers::GetTestingServices();
-				socket->StartThread(this->count);
+			this->_count = Helpers::RandomInt();
+			_f1._future = move(this->_future).thenValue([&](T _x) {
+				/* TestingServicesClient* socket = Helpers::GetTestingServices();
+				socket->StartThread(this->_count); */
+				return _x;
 				}).thenValue(&func);
 
-				f1.temp_fut = move(f1.fut).thenValue([&](R) {
-					TestingServicesClient* socket = Helpers::GetTestingServices();
-					socket->EndThread(this->count);
+				_f1._t_future = move(_f1._future).thenValue([&](R _x) {
+					/* TestingServicesClient* socket = Helpers::GetTestingServices();
+					socket->EndThread(this->_count); */
+					return _x;
 					});
 
-				this->p1.setValue();
+				if (false)
+				{
+					this->_promise.setValue();
+				}
 		}
 		else
 		{
-			this->count = Helpers::RandomInt();
-			f1.fut = move(this->temp_fut).thenValue([&](T) {
-				TestingServicesClient* socket = Helpers::GetTestingServices();
-				socket->CreateThread();
-				socket->StartThread(this->count);
+			this->_count = Helpers::RandomInt();
+			_f1._future = move(this->_t_future).thenValue([&](T _x) {
+				/* TestingServicesClient* socket = Helpers::GetTestingServices();
+				socket->CreateThread(); 
+				socket->StartThread(this->_count); */
+				return _x;
 				}).thenValue(&func);
 
-				f1.temp_fut = move(f1.fut).thenValue([&](R) {
-					TestingServicesClient* socket = Helpers::GetTestingServices();
-					socket->EndThread(this->count);
+				_f1._t_future = move(_f1._future).thenValue([&](R _x) {
+					/* TestingServicesClient* socket = Helpers::GetTestingServices();
+					socket->EndThread(this->_count); */
+					return _x;
 					});
 		}
-		return f1;
+		return _f1;
 	}
 
 
 	template <typename T2 = T>
 	T2 get() {
-		move(this->temp_fut).get();
-		return move(this->fut).get();
+		move(this->_t_future).get();
+		return move(this->_future).get();
 	}
 
 	// template <class T>
 	bool isReady() const {
-		return this->fut.isReady();
+		return this->_future.isReady();
 	}
 
 	// template <class T>
 	bool hasValue() const {
-		return this->fut.hasValue();
+		return this->_future.hasValue();
 	}
 
 	// template <class T>
 	bool hasException() const {
-		return this->fut.hasException();
+		return this->_future.hasException();
 	}
 
 	// template <class T>
 	T& value()& {
-		return this->fut.value();
+		return this->_future.value();
 	}
 
 	// template <class T>
 	T const& value() const& {
-		return this->fut.value();
+		return this->_future.value();
 	}
 
 	// template <class T>
 	T&& value()&& {
-		return this->fut.value();
+		return this->_future.value();
 	}
 
 	// template <class T>
 	T const&& value() const&& {
-		return this->fut.value();
+		return this->_future.value();
 	}
 
 	// template <class T>
 	Try<T>& result()& {
-		return this->fut.result();
+		return this->_future.result();
 	}
 
 	// template <class T>
 	Try<T> const& result() const& {
-		return this->fut.result();
+		return this->_future.result();
 	}
 
 	// template <class T>
 	Try<T>&& result()&& {
-		return this->fut.result();
+		return this->_future.result();
 	}
 
 	// template <class T>
 	Try<T> const&& result() const&& {
-		return this->fut.result();
+		return this->_future.result();
 	}
 
 	void cancel() {
-		this->fut.cancel();
+		this->_future.cancel();
 	}
 
 	bool valid() const noexcept {
-		this->fut.valid();
+		this->_future.valid();
 	}
 
 	ControlledFuture<Unit> unit()&& {
-		ControlledFuture<Unit> f1 = ControlledFuture<Unit>(false);
-		f1.fut = std::move(*(this->fut)).then();
-		return f1;
+		ControlledFuture<Unit> _f1 = ControlledFuture<Unit>(false);
+		_f1._future = std::move(*(this->_future)).then();
+		return _f1;
 	}
 
 	// template <class T>
 	ControlledFuture<Unit> then()&& {
-		ControlledFuture<Unit> f1 = ControlledFuture<Unit>(false);
-		f1.fut = std::move(*(this->fut)).thenValue([](T&&) {});
-		return f1;
+		ControlledFuture<Unit> _f1 = ControlledFuture<Unit>(false);
+		_f1._future = std::move(*(this->_future)).thenValue([](T&&) {});
+		return _f1;
 	}
 
 };
