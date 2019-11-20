@@ -20,7 +20,7 @@ public:
 	ControlledFuture<T> getFuture()
 	{
 		ControlledFuture<T> _f1 = ControlledFuture<T>();
-		this->_promise = move(_f1._promise._promise);
+		this->_promise = move(_f1._promise);
 		_f1._flag_from_promise = true;
 		return _f1;
 	}
@@ -34,5 +34,14 @@ public:
 	void setValue(T _x)
 	{
 		this->_promise.setValue(_x);
+	}
+
+	
+	bool isFulfilled() {
+		return this->_promise.isFulfilled();
+	}
+
+	bool valid() {
+		return this->_promise.valid();
 	}
 };

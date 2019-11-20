@@ -15,7 +15,7 @@
 	{
 	private:
 		TestingServicesClientConfig config;
-		IClientMethods* socket;
+		IClientMethods* _socket;
 		int counter;
 		std::mutex mu;
 

@@ -43,7 +43,7 @@
 	void TestingServicesClient::SetupTransportHTTP()
 	{
 		// std::cout << "HTTP-8080:" << std::endl;
-		this->socket = new HttpClient(this->config);
+		this->_socket = new HttpClient(this->config);
 
 	}
 
@@ -64,7 +64,7 @@
 
 	void TestingServicesClient::SendRequest(std::string func, std::string json)
 	{
-		(this->socket)->SendRequest(func, json);
+		(this->_socket)->SendRequest(func, json);
 	}
 
 	void TestingServicesClient::CreateThread()

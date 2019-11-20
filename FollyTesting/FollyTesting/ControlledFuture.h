@@ -11,9 +11,9 @@ using namespace std;
 template <typename T>
 class ControlledFuture {
 public:
-	// Promise<T> _promise;
-	ControlledPromise<T> _promise = ControlledPromise<T>();
-	folly::Future<T> _future = this->_promise._promise.getFuture();
+	Promise<T> _promise;
+	// ControlledPromise<T> _promise = ControlledPromise<T>();
+	folly::Future<T> _future = this->_promise.getFuture();
 	Promise<T> _t_promise;
 	folly::Future<T> _t_future = this->_t_promise.getFuture();
 	bool _flag = false;
@@ -29,8 +29,8 @@ public:
 
 	ControlledFuture()
 	{
-		/* TestingServicesClient* socket = Helpers::GetTestingServices();
-		socket->CreateThread(); */
+		TestingServicesClient* _socket = Helpers::GetTestingServices();
+		_socket->CreateThread();
 		this->_flag = true;
 	}
 
@@ -44,8 +44,10 @@ public:
 		ControlledFuture<T2> _f1 = ControlledFuture<T2>(true);
 		_f1._flag = this->_flag;
 		_f1._flag_from_promise = this->_flag_from_promise;
+		_f1._promise = move(this->_promise);
 		_f1._future = (this->_future).via(executor);
 		_f1._t_future = (this->_t_future).via(executor);
+
 		return _f1;
 	}
 
@@ -58,18 +60,18 @@ public:
 		{
 			this->_count = Helpers::RandomInt();
 			_f1._future = move(this->_future).thenValue([&](T _x) {
-				/* TestingServicesClient* socket = Helpers::GetTestingServices();
-				socket->StartThread(this->_count); */
+				TestingServicesClient* _socket = Helpers::GetTestingServices();
+				_socket->StartThread(this->_count);
 				return _x;
 				}).thenValue(&func);
 
 				_f1._t_future = move(_f1._future).thenValue([&](R _x) {
-					/* TestingServicesClient* socket = Helpers::GetTestingServices();
-					socket->EndThread(this->_count); */
+					TestingServicesClient* _socket = Helpers::GetTestingServices();
+					_socket->EndThread(this->_count);
 					return _x;
 					});
 
-				if (false)
+				if (!(this->_flag_from_promise))
 				{
 					this->_promise.setValue();
 				}
@@ -78,15 +80,15 @@ public:
 		{
 			this->_count = Helpers::RandomInt();
 			_f1._future = move(this->_t_future).thenValue([&](T _x) {
-				/* TestingServicesClient* socket = Helpers::GetTestingServices();
-				socket->CreateThread(); 
-				socket->StartThread(this->_count); */
+				TestingServicesClient* _socket = Helpers::GetTestingServices();
+				_socket->CreateThread(); 
+				_socket->StartThread(this->_count);
 				return _x;
 				}).thenValue(&func);
 
 				_f1._t_future = move(_f1._future).thenValue([&](R _x) {
-					/* TestingServicesClient* socket = Helpers::GetTestingServices();
-					socket->EndThread(this->_count); */
+					TestingServicesClient* _socket = Helpers::GetTestingServices();
+					_socket->EndThread(this->_count);
 					return _x;
 					});
 		}

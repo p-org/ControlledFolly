@@ -67,46 +67,46 @@ void Helpers::Printreserror(std::string reqID, std::string errormsg)
 
  /* TestingServicesClient*  Helpers::CreateTestingService() {
 	TestingServicesClientConfig omc(HTTP, "localhost", 8080);
-	// Helpers::socket = new TestingServicesClient(omc);
+	// Helpers::_socket = new TestingServicesClient(omc);
 
-	/* static TestingServicesClient* socket;
+	/* static TestingServicesClient* _socket;
 	static bool flag1 = true;
 	if (flag1) {
 		TestingServicesClientConfig omc(HTTP, "localhost", 8080);
-		socket = new TestingServicesClient(omc);
+		_socket = new TestingServicesClient(omc);
 	}
-	return socket; 
+	return _socket; 
 
-	return Helpers::socket;
+	return Helpers::_socket;
 } */
 
 TestingServicesClient*  Helpers::CreateTestingServices(Transport transport, std::string host, int port, std::string sess = "") {
-	static TestingServicesClient* socket;
+	static TestingServicesClient* _socket;
 	Helpers::count = 0;
 
 	if (host.compare("GetTestingServices") != 0)
 	{
 		TestingServicesClientConfig omc(transport, host, port, sess);
-		socket = new TestingServicesClient(omc);
+		_socket = new TestingServicesClient(omc);
 	}
 	/* if (flag1) {
 		TestingServicesClientConfig omc(transport, host, port);
-		socket = new TestingServicesClient(omc);
+		_socket = new TestingServicesClient(omc);
 		flag1 = false;
 	} */
-	return socket;
+	return _socket;
 }
 
 TestingServicesClient*  Helpers::GetTestingServices() {
-	// return Helpers::socket;
-	/* static TestingServicesClient* socket;
+	// return Helpers::_socket;
+	/* static TestingServicesClient* _socket;
 	static bool flag1 = true;
 	if (flag1) {
 		TestingServicesClientConfig omc(HTTP, "localhost", 8080);
-		socket = new TestingServicesClient(omc);
+		_socket = new TestingServicesClient(omc);
 		flag1 = false;
 	}
-	return socket; */
+	return _socket; */
 	return Helpers::CreateTestingServices(HTTP, "GetTestingServices", 8080);
-	// return Helpers::socket;
+	// return Helpers::_socket;
 } 
