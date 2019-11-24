@@ -194,7 +194,8 @@ void HttpClient::SendRequest(std::string func, std::string json)
 
 		if (convertdata == -1)
 		{
-			Helpers::Printres(reqID);
+			// TODO: The below code should be uncommented.
+			// Helpers::Printres(reqID);
 			// std::cout << "--> Got Response to request: " << reqID << " error: False." << std::endl;
 		}
 		else

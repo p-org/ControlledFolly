@@ -73,7 +73,8 @@ public:
 
 				if (!(this->_flag_from_promise))
 				{
-					this->_promise.setValue();
+					T _x = {};
+					this->_promise.setValue(_x);
 				}
 		}
 		else
@@ -87,6 +88,51 @@ public:
 				}).thenValue(&func);
 
 				_f1._t_future = move(_f1._future).thenValue([&](R _x) {
+					TestingServicesClient* _socket = Helpers::GetTestingServices();
+					_socket->EndThread(this->_count);
+					return _x;
+					});
+		}
+		return _f1;
+	}
+
+
+	template <typename R, typename... Args>
+	auto thenValueInline(R(&func)(Args...))&& {
+		ControlledFuture<R> _f1 = ControlledFuture<R>(false);
+		_f1._flag_from_promise = this->_flag_from_promise;
+		if (this->_flag)
+		{
+			this->_count = Helpers::RandomInt();
+			_f1._future = move(this->_future).thenValueInline([&](T _x) {
+				TestingServicesClient* _socket = Helpers::GetTestingServices();
+				_socket->StartThread(this->_count);
+				return _x;
+				}).thenValueInline(&func);
+
+				_f1._t_future = move(_f1._future).thenValueInline([&](R _x) {
+					TestingServicesClient* _socket = Helpers::GetTestingServices();
+					_socket->EndThread(this->_count);
+					return _x;
+					});
+
+				if (!(this->_flag_from_promise))
+				{
+					T _x = {};
+					this->_promise.setValue(_x);
+				}
+		}
+		else
+		{
+			this->_count = Helpers::RandomInt();
+			_f1._future = move(this->_t_future).thenValueInline([&](T _x) {
+				TestingServicesClient* _socket = Helpers::GetTestingServices();
+				_socket->CreateThread();
+				_socket->StartThread(this->_count);
+				return _x;
+				}).thenValueInline(&func);
+
+				_f1._t_future = move(_f1._future).thenValueInline([&](R _x) {
 					TestingServicesClient* _socket = Helpers::GetTestingServices();
 					_socket->EndThread(this->_count);
 					return _x;
