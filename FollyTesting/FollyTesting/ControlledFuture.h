@@ -29,8 +29,8 @@ public:
 
 	ControlledFuture()
 	{
-		TestingServicesClient* _socket = Helpers::GetTestingServices();
-		_socket->CreateThread();
+		// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+		// _socket->CreateThread();
 		this->_flag = true;
 	}
 
@@ -60,14 +60,14 @@ public:
 		{
 			this->_count = Helpers::RandomInt();
 			_f1._future = move(this->_future).thenValue([&](T _x) {
-				TestingServicesClient* _socket = Helpers::GetTestingServices();
-				_socket->StartThread(this->_count);
+				// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+				// _socket->StartThread(this->_count);
 				return _x;
 				}).thenValue(&func);
 
 				_f1._t_future = move(_f1._future).thenValue([&](R _x) {
-					TestingServicesClient* _socket = Helpers::GetTestingServices();
-					_socket->EndThread(this->_count);
+					// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+					// _socket->EndThread(this->_count);
 					return _x;
 					});
 
@@ -81,21 +81,65 @@ public:
 		{
 			this->_count = Helpers::RandomInt();
 			_f1._future = move(this->_t_future).thenValue([&](T _x) {
-				TestingServicesClient* _socket = Helpers::GetTestingServices();
-				_socket->CreateThread(); 
-				_socket->StartThread(this->_count);
+				// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+				// _socket->CreateThread(); 
+				// _socket->StartThread(this->_count);
 				return _x;
 				}).thenValue(&func);
 
 				_f1._t_future = move(_f1._future).thenValue([&](R _x) {
-					TestingServicesClient* _socket = Helpers::GetTestingServices();
-					_socket->EndThread(this->_count);
+					// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+					// _socket->EndThread(this->_count);
 					return _x;
 					});
 		}
 		return _f1;
 	}
 
+	template <typename F>
+	ControlledFuture<typename futures::detail::valueCallableResult<T, F>::value_type>
+		thenValue(F&& func)&& {
+		ControlledFuture<typename futures::detail::valueCallableResult<T, F>::value_type> _f1 = ControlledFuture<typename futures::detail::valueCallableResult<T, F>::value_type>(false);
+		_f1._flag_from_promise = this->_flag_from_promise;
+		if (this->_flag)
+		{
+			this->_count = Helpers::RandomInt();
+			_f1._future = move(this->_future).thenValue([&](T _x) {
+				// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+				// _socket->StartThread(this->_count);
+				return _x;
+				}).thenValue(func);
+
+				_f1._t_future = move(_f1._future).thenValue([&](typename futures::detail::valueCallableResult<T, F>::value_type _x) {
+					// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+					// _socket->EndThread(this->_count);
+					return _x;
+					});
+
+				if (!(this->_flag_from_promise))
+				{
+					T _x = {};
+					this->_promise.setValue(_x);
+				}
+		}
+		else
+		{
+			this->_count = Helpers::RandomInt();
+			_f1._future = move(this->_t_future).thenValue([&](T _x) {
+				// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+				// _socket->CreateThread(); 
+				// _socket->StartThread(this->_count);
+				return _x;
+				}).thenValue(func);
+
+				_f1._t_future = move(_f1._future).thenValue([&](typename futures::detail::valueCallableResult<T, F>::value_type _x) {
+					// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+					// _socket->EndThread(this->_count);
+					return _x;
+					});
+		}
+		return _f1;
+	}
 
 	template <typename R, typename... Args>
 	auto thenValueInline(R(&func)(Args...))&& {
@@ -105,14 +149,14 @@ public:
 		{
 			this->_count = Helpers::RandomInt();
 			_f1._future = move(this->_future).thenValueInline([&](T _x) {
-				TestingServicesClient* _socket = Helpers::GetTestingServices();
-				_socket->StartThread(this->_count);
+				// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+				// _socket->StartThread(this->_count);
 				return _x;
 				}).thenValueInline(&func);
 
 				_f1._t_future = move(_f1._future).thenValueInline([&](R _x) {
-					TestingServicesClient* _socket = Helpers::GetTestingServices();
-					_socket->EndThread(this->_count);
+					// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+					// _socket->EndThread(this->_count);
 					return _x;
 					});
 
@@ -126,21 +170,158 @@ public:
 		{
 			this->_count = Helpers::RandomInt();
 			_f1._future = move(this->_t_future).thenValueInline([&](T _x) {
-				TestingServicesClient* _socket = Helpers::GetTestingServices();
-				_socket->CreateThread();
-				_socket->StartThread(this->_count);
+				// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+				// _socket->CreateThread();
+				// _socket->StartThread(this->_count);
 				return _x;
 				}).thenValueInline(&func);
 
 				_f1._t_future = move(_f1._future).thenValueInline([&](R _x) {
-					TestingServicesClient* _socket = Helpers::GetTestingServices();
-					_socket->EndThread(this->_count);
+					// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+					// _socket->EndThread(this->_count);
 					return _x;
 					});
 		}
 		return _f1;
 	}
 
+
+	// template <class T>
+	template <typename F>
+	ControlledFuture<typename futures::detail::valueCallableResult<T, F>::value_type> thenValueInline(F&& func)&& {
+		ControlledFuture<typename futures::detail::valueCallableResult<T, F>::value_type> _f1 = ControlledFuture<typename futures::detail::valueCallableResult<T, F>::value_type>(false);
+		_f1._flag_from_promise = this->_flag_from_promise;
+		if (this->_flag)
+		{
+			this->_count = Helpers::RandomInt();
+			_f1._future = move(this->_future).thenValueInline([&](T _x) {
+				// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+				// _socket->StartThread(this->_count);
+				return _x;
+				}).thenValueInline(func);
+
+				_f1._t_future = move(_f1._future).thenValueInline([&](typename futures::detail::valueCallableResult<T, F>::value_type _x) {
+					// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+					// _socket->EndThread(this->_count);
+					return _x;
+					});
+
+				if (!(this->_flag_from_promise))
+				{
+					T _x = {};
+					this->_promise.setValue(_x);
+				}
+		}
+		else
+		{
+			this->_count = Helpers::RandomInt();
+			_f1._future = move(this->_t_future).thenValueInline([&](T _x) {
+				// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+				// _socket->CreateThread();
+				// _socket->StartThread(this->_count);
+				return _x;
+				}).thenValueInline(func);
+
+				_f1._t_future = move(_f1._future).thenValueInline([&](typename futures::detail::valueCallableResult<T, F>::value_type _x) {
+					// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+					// _socket->EndThread(this->_count);
+					return _x;
+					});
+		}
+		return _f1;
+	}
+
+
+	template <typename F>
+	ControlledFuture<typename futures::detail::tryCallableResult<T, F>::value_type>
+		thenTry(F&& func)&& {
+		ControlledFuture<typename futures::detail::tryCallableResult<T, F>::value_type> _f1 = ControlledFuture<typename futures::detail::tryCallableResult<T, F>::value_type>(false);
+		_f1._flag_from_promise = this->_flag_from_promise;
+		if (this->_flag)
+		{
+			this->_count = Helpers::RandomInt();
+			_f1._future = move(this->_future).thenValue([&](T _x) {
+				// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+				// _socket->StartThread(this->_count);
+				return _x;
+				}).thenTry(func);
+
+				_f1._t_future = move(_f1._future).thenValue([&](typename futures::detail::tryCallableResult<T, F>::value_type _x) {
+					// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+					// _socket->EndThread(this->_count);
+					return _x;
+					});
+
+				if (!(this->_flag_from_promise))
+				{
+					T _x = {};
+					this->_promise.setValue(_x);
+				}
+		}
+		else
+		{
+			this->_count = Helpers::RandomInt();
+			_f1._future = move(this->_t_future).thenValue([&](T _x) {
+				// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+				// _socket->CreateThread(); 
+				// _socket->StartThread(this->_count);
+				return _x;
+				}).thenTry(func);
+
+				_f1._t_future = move(_f1._future).thenValue([&](typename futures::detail::tryCallableResult<T, F>::value_type _x) {
+					// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+					// _socket->EndThread(this->_count);
+					return _x;
+					});
+		}
+		return _f1;
+	}
+
+
+	template <typename F>
+	ControlledFuture<typename futures::detail::tryCallableResult<T, F>::value_type>
+		thenTryInline(F&& func)&& {
+		ControlledFuture<typename futures::detail::tryCallableResult<T, F>::value_type> _f1 = ControlledFuture<typename futures::detail::tryCallableResult<T, F>::value_type>(false);
+		_f1._flag_from_promise = this->_flag_from_promise;
+		if (this->_flag)
+		{
+			this->_count = Helpers::RandomInt();
+			_f1._future = move(this->_future).thenValue([&](T _x) {
+				// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+				// _socket->StartThread(this->_count);
+				return _x;
+				}).thenTryInline(func);
+
+				_f1._t_future = move(_f1._future).thenValue([&](typename futures::detail::tryCallableResult<T, F>::value_type _x) {
+					// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+					// _socket->EndThread(this->_count);
+					return _x;
+					});
+
+				if (!(this->_flag_from_promise))
+				{
+					T _x = {};
+					this->_promise.setValue(_x);
+				}
+		}
+		else
+		{
+			this->_count = Helpers::RandomInt();
+			_f1._future = move(this->_t_future).thenValue([&](T _x) {
+				// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+				// _socket->CreateThread(); 
+				// _socket->StartThread(this->_count);
+				return _x;
+				}).thenTryInline(func);
+
+				_f1._t_future = move(_f1._future).thenValue([&](typename futures::detail::tryCallableResult<T, F>::value_type _x) {
+					// TestingServicesClient* // _socket = Helpers::GetTestingServices();
+					// _socket->EndThread(this->_count);
+					return _x;
+					});
+		}
+		return _f1;
+	}
 
 	template <typename T2 = T>
 	T2 get() {
