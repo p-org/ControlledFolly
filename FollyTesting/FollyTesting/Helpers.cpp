@@ -45,7 +45,7 @@ std::string Helpers::RandomStr(int length)
 void Helpers::Printingstuff(std::string counter, std::string func, std::string id, std::string state)
 {
 	Helpers::mu.lock();
-	std::cout << counter << "\t" << func << "(" << id << ")" << "\t" << state << " Thread ID: " << std::this_thread::get_id() << std::endl;
+	// std::cout << counter << "\t" << func << "(" << id << ")" << "\t" << state << " Thread ID: " << std::this_thread::get_id() << std::endl;
 	Helpers::mu.unlock();
 }
 

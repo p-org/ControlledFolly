@@ -129,9 +129,9 @@
 	void TestingServicesClient::CreateResource(int resourceId)
 	{
 		std::string str = "," + std::to_string(resourceId);
-		std::cout << this->counter++ << "\t" << "CreateResource(" << resourceId << ")" << "\t" << "Enter" << std::endl;
+		// std::cout << this->counter++ << "\t" << "CreateResource(" << resourceId << ")" << "\t" << "Enter" << std::endl;
 		this->SendRequest("CreateResource", str);
-		std::cout << this->counter++ << "\t" << "CreateResource(" << resourceId << ")" << "\t" << "Exit" << std::endl;
+		// std::cout << this->counter++ << "\t" << "CreateResource(" << resourceId << ")" << "\t" << "Exit" << std::endl;
 	}
 
 	void TestingServicesClient::DeleteResource(int resourceId)
@@ -145,9 +145,9 @@
 	void TestingServicesClient::SignalUpdatedResource(int resourceId)
 	{
 		std::string str = "," + std::to_string(resourceId);
-		std::cout << this->counter++ << "\t" << "SignalUpdatedResource(" << resourceId << ")" << "\t" << "Enter" << std::endl;
+		// std::cout << this->counter++ << "\t" << "SignalUpdatedResource(" << resourceId << ")" << "\t" << "Enter" << std::endl;
 		this->SendRequest("SignalUpdatedResource", str);
-		std::cout << this->counter++ << "\t" << "SignalUpdatedResource(" << resourceId << ")" << "\t" << "Exit" << std::endl;
+		// std::cout << this->counter++ << "\t" << "SignalUpdatedResource(" << resourceId << ")" << "\t" << "Exit" << std::endl;
 	}
 
 	void TestingServicesClient::WaitForMainTask()
