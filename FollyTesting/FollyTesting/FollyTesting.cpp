@@ -6,29 +6,28 @@
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include "TestingServicesClient.h"
 
-#include <folly/futures/Future.h>
+#include "ControlledFuture.h"
+#include "ControlledMicroLock.h"
 #include <folly/executors/ThreadedExecutor.h>
-#include <folly/synchronization/SmallLocks.h>
 
-bool depositDone = false;
-bool withdrawDone = false;
+bool sh_t1 = false;
+bool sh_t2 = false;
 
 using namespace folly;
 using namespace std;
 
-
-MicroLock ml;
+TestingServicesClient* _client = Helpers::CreateTestingServices(HTTP, "localhost", 8080, "");
+ControlledMicroLock ml;
 
 // Folly represents void as Unit
 Unit func_1(Unit)
 {
-	std::cout << "Execution given to Thread(1)" << std::endl;
 
 	ml.lock();
 	std::cout << "Lock given to Thread(1)" << std::endl;
-	if (depositDone && withdrawDone)
+	if (sh_t1 && sh_t2)
 	{
-		// _client->Assert(false, "Bug found!");
+		_client->Assert(false, "Bug found!");
 	}
 	ml.unlock();
 	return folly::Unit();
@@ -36,11 +35,10 @@ Unit func_1(Unit)
 
 Unit func_2(Unit)
 {
-	std::cout << "Execution given to Thread(2)" << std::endl;
 
 	ml.lock();
 	std::cout << "Lock given to Thread(2)" << std::endl;
-	depositDone = true;
+	sh_t1 = true;
 	ml.unlock();
 
 	return folly::Unit();
@@ -48,39 +46,33 @@ Unit func_2(Unit)
 
 Unit func_3(Unit)
 {
-	std::cout << "Execution given to Thread(3)" << std::endl;
 
 	ml.lock();
 	std::cout << "Lock given to Thread(3)" << std::endl;
-	withdrawDone = true;
+	sh_t2 = true;
 	ml.unlock();
 
 	return folly::Unit();
 }
 
 
-void testing()
+
+int main()
 {
 	folly::ThreadedExecutor executor;
-	Future<Unit> f1 = Future<Unit>().via(&executor);
-	Future<Unit> f2 = Future<Unit>().via(&executor);
-	Future<Unit> f3 = Future<Unit>().via(&executor);
+	ControlledFuture<Unit> f1 = ControlledFuture<Unit>().via(&executor);
+	ControlledFuture<Unit> f2 = ControlledFuture<Unit>().via(&executor);
+	ControlledFuture<Unit> f3 = ControlledFuture<Unit>().via(&executor);
 
 
 	auto d1 = move(f1).thenValue(func_1);
 	auto d2 = move(f2).thenValue(func_2);
 	auto d3 = move(f3).thenValue(func_3);
 
+	_client->WaitForMainTask();
+
 	move(d1).get();
 	move(d2).get();
 	move(d3).get();
-}
-
-int main()
-{
-	for (int i = 0; i < 1; i++)
-	{
-		testing();
-	}
 }
 
