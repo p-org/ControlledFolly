@@ -4,6 +4,7 @@
 #include <time.h> 
 #include <iostream>
 #include <cassert>
+#include "NekaraCppClientConfig.h"
 
 std::mutex Helpers::mu;
 int Helpers::count;
@@ -65,45 +66,45 @@ void Helpers::Printreserror(std::string reqID, std::string errormsg)
 	throw 1;
 }
 
- /* TestingServicesClient*  Helpers::CreateTestingService() {
-	TestingServicesClientConfig omc(HTTP, "localhost", 8080);
-	// Helpers::_socket = new TestingServicesClient(omc);
+ /* NekaraCppClient*  Helpers::CreateTestingService() {
+	NekaraCppClientConfig omc(HTTP, "localhost", 8080);
+	// Helpers::_socket = new NekaraCppClient(omc);
 
-	/* static TestingServicesClient* _socket;
+	/* static NekaraCppClient* _socket;
 	static bool flag1 = true;
 	if (flag1) {
-		TestingServicesClientConfig omc(HTTP, "localhost", 8080);
-		_socket = new TestingServicesClient(omc);
+		NekaraCppClientConfig omc(HTTP, "localhost", 8080);
+		_socket = new NekaraCppClient(omc);
 	}
 	return _socket; 
 
 	return Helpers::_socket;
 } */
 
-TestingServicesClient*  Helpers::CreateTestingServices(Transport transport, std::string host, int port, std::string sess = "") {
-	static TestingServicesClient* _socket;
+NekaraCppClient*  Helpers::CreateTestingServices(Transport transport, std::string host, int port, std::string sess = "") {
+	static NekaraCppClient* _socket;
 	Helpers::count = 0;
 
 	if (host.compare("GetTestingServices") != 0)
 	{
-		TestingServicesClientConfig omc(transport, host, port, sess);
-		_socket = new TestingServicesClient(omc);
+		NekaraCppClientConfig omc(transport, host, port, sess);
+		_socket = new NekaraCppClient(omc);
 	}
 	/* if (flag1) {
-		TestingServicesClientConfig omc(transport, host, port);
-		_socket = new TestingServicesClient(omc);
+		NekaraCppClientConfig omc(transport, host, port);
+		_socket = new NekaraCppClient(omc);
 		flag1 = false;
 	} */
 	return _socket;
 }
 
-TestingServicesClient*  Helpers::GetTestingServices() {
+NekaraCppClient*  Helpers::GetTestingServices() {
 	// return Helpers::_socket;
-	/* static TestingServicesClient* _socket;
+	/* static NekaraCppClient* _socket;
 	static bool flag1 = true;
 	if (flag1) {
-		TestingServicesClientConfig omc(HTTP, "localhost", 8080);
-		_socket = new TestingServicesClient(omc);
+		NekaraCppClientConfig omc(HTTP, "localhost", 8080);
+		_socket = new NekaraCppClient(omc);
 		flag1 = false;
 	}
 	return _socket; */

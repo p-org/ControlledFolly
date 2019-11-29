@@ -5,7 +5,7 @@ HttpClient::HttpClient()
 
 }
 
-HttpClient::HttpClient(TestingServicesClientConfig occ)
+HttpClient::HttpClient(NekaraCppClientConfig occ)
 {
 	this->clientID = Helpers::RandomStr();
 	this->hSession = WinHttpOpen(L"WinHTTP Example/1.0",

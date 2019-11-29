@@ -1,7 +1,7 @@
 #pragma once
 
-#include "TestingServicesClient.h"
 #include <folly/synchronization/SmallLocks.h>
+#include "NekaraCppClient.h"
 
 using namespace folly;
 using namespace std;
@@ -18,13 +18,13 @@ public:
 
 	ControlledMicroLock() 
 	{
-		TestingServicesClient* _socket = Helpers::GetTestingServices();
+		NekaraCppClient* _socket = Helpers::GetTestingServices();
 		_socket->CreateResource(this->_id);
 	}
 
 	~ControlledMicroLock()
 	{
-		/* TestingServicesClient* _socket = Helpers::GetTestingServices();
+		/* NekaraCppClient* _socket = Helpers::GetTestingServices();
 		_socket->DeleteResource(this->_id); */
 	}
 
@@ -36,7 +36,7 @@ public:
 	void lock()
 	{
 
-		TestingServicesClient* _socket = Helpers::GetTestingServices();
+		NekaraCppClient* _socket = Helpers::GetTestingServices();
 		_socket->ContextSwitch();
 
 		//TODO: The below while have to be efficiently re-coded
@@ -61,7 +61,7 @@ public:
 		_t_ml.lock();
 		this->_lock_status = false;
 		_t_ml.unlock();
-		TestingServicesClient* _socket = Helpers::GetTestingServices();
+		NekaraCppClient* _socket = Helpers::GetTestingServices();
 		_socket->SignalUpdatedResource(this->_id);
 	}
 
@@ -86,13 +86,13 @@ public:
 
 	ControlledMicroSpinLock()
 	{
-		TestingServicesClient* _socket = Helpers::GetTestingServices();
+		NekaraCppClient* _socket = Helpers::GetTestingServices();
 		_socket->CreateResource(this->_id);
 	}
 
 	~ControlledMicroSpinLock()
 	{
-		/* TestingServicesClient* _socket = Helpers::GetTestingServices();
+		/* NekaraCppClient* _socket = Helpers::GetTestingServices();
 		_socket->DeleteResource(this->_id); */
 	}
 
@@ -104,7 +104,7 @@ public:
 	void lock()
 	{
 
-		TestingServicesClient* _socket = Helpers::GetTestingServices();
+		NekaraCppClient* _socket = Helpers::GetTestingServices();
 		_socket->ContextSwitch();
 
 		//TODO: The below while have to be efficiently re-coded
@@ -129,7 +129,7 @@ public:
 		_t_ml.lock();
 		this->_lock_status = false;
 		_t_ml.unlock();
-		TestingServicesClient* _socket = Helpers::GetTestingServices();
+		NekaraCppClient* _socket = Helpers::GetTestingServices();
 		_socket->SignalUpdatedResource(this->_id);
 	}
 
@@ -153,13 +153,13 @@ public:
 
 	ControlledPicoSpinLock()
 	{
-		TestingServicesClient* _socket = Helpers::GetTestingServices();
+		NekaraCppClient* _socket = Helpers::GetTestingServices();
 		_socket->CreateResource(this->_id);
 	}
 
 	~ControlledPicoSpinLock()
 	{
-		/* TestingServicesClient* _socket = Helpers::GetTestingServices();
+		/* NekaraCppClient* _socket = Helpers::GetTestingServices();
 		_socket->DeleteResource(this->_id); */
 	}
 
@@ -171,7 +171,7 @@ public:
 	void lock()
 	{
 
-		TestingServicesClient* _socket = Helpers::GetTestingServices();
+		NekaraCppClient* _socket = Helpers::GetTestingServices();
 		_socket->ContextSwitch();
 
 		//TODO: The below while have to be efficiently re-coded
@@ -196,7 +196,7 @@ public:
 		_t_ml.lock();
 		this->_lock_status = false;
 		_t_ml.unlock();
-		TestingServicesClient* _socket = Helpers::GetTestingServices();
+		NekaraCppClient* _socket = Helpers::GetTestingServices();
 		_socket->SignalUpdatedResource(this->_id);
 	}
 

@@ -10,8 +10,8 @@
 #include <minwindef.h>
 #include <iostream>
 #include <string>
-#include "TestingServicesClientConfig.h"
-#include "TestingServicesClient.h"
+#include "NekaraCppClientConfig.h"
+#include "NekaraCppClient.h"
 #include "IClientMethods.h"
 #include "Helpers.h"
 
@@ -28,7 +28,7 @@ private:
 	std::string ConvertResponseLPCWSTRtoString(HINTERNET hRequest);
 public:
 	HttpClient();
-	HttpClient(TestingServicesClientConfig omcc);
+	HttpClient(NekaraCppClientConfig omcc);
 	HINTERNET getHRequest();
 	void SendRequest(std::string func, std::string json);
 	~HttpClient();

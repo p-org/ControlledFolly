@@ -1,11 +1,11 @@
 #pragma once
 #include <string>
 #include <mutex>
-#include "TestingServicesClient.h"
+#include "NekaraCppClient.h"
 #ifndef Helpers_h
 #define Helpers_h
 
-class TestingServicesClient;
+class NekaraCppClient;
 
 class Helpers
 {
@@ -19,8 +19,8 @@ public:
 	static void Printingstuff(std::string counter, std::string func, std::string id, std::string state);
 	static void Printres(std::string reqID);
 	static void Printreserror(std::string reqID, std::string errormsg);
-	static TestingServicesClient* CreateTestingServices(Transport transport, std::string host, int port, std::string sess);
-	static TestingServicesClient* GetTestingServices();
+	static NekaraCppClient* CreateTestingServices(Transport transport, std::string host, int port, std::string sess);
+	static NekaraCppClient* GetTestingServices();
 };
 
 #endif // !Helpers_h
