@@ -4,7 +4,7 @@
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #define GLOG_NO_ABBREVIATED_SEVERITIES
-#include "TestingServicesClient.h"
+#include "NekaraCppClient.h"
 
 #include "ControlledFuture.h"
 #include "ControlledMicroLock.h"
@@ -16,7 +16,7 @@ bool sh_t2 = false;
 using namespace folly;
 using namespace std;
 
-TestingServicesClient* _client = Helpers::CreateTestingServices(HTTP, "localhost", 8080, "");
+NekaraCppClient* _client = Helpers::CreateTestingServices(HTTP, "localhost", 8080, "");
 ControlledMicroLock ml;
 
 // Folly represents void as Unit

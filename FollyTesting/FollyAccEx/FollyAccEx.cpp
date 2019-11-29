@@ -1,50 +1,55 @@
 // Folly.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-/* #define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#define GLOG_NO_ABBREVIATED_SEVERITIES */
 #include <folly/futures/Future.h>
 #include <folly/executors/ThreadedExecutor.h>
+#include <folly/synchronization/SmallLocks.h>
 
-int x = 1;
-int y = 2;
-int z = 4;
-int balance = x;
-
-
-bool depositDone = false;
-bool withdrawDone = false;
+bool sh_t1 = false;
+bool sh_t2 = false;
 
 using namespace folly;
 using namespace std;
 
 
-Unit do_both(Unit)
+MicroLock ml;
+
+// Folly represents void as Unit
+Unit func_1(Unit)
 {
-	if (depositDone && withdrawDone)
+
+	ml.lock();
+	std::cout << "Lock given to Thread(1)" << std::endl;
+	if (sh_t1 && sh_t2)
 	{
-		assert(balance == (x - y) - z, "Bug found!");
+		assert(false, "Bug found!");
 	}
-
+	ml.unlock();
 	return folly::Unit();
 }
 
-Unit do_deposit(Unit)
+Unit func_2(Unit)
 {
-	balance += y;
-	depositDone = true;
+
+	ml.lock();
+	std::cout << "Lock given to Thread(2)" << std::endl;
+	sh_t1 = true;
+	ml.unlock();
 
 	return folly::Unit();
 }
 
-Unit do_withdraw(Unit)
+Unit func_3(Unit)
 {
-	balance -= z;
-	withdrawDone = true;
+
+	ml.lock();
+	std::cout << "Lock given to Thread(3)" << std::endl;
+	sh_t2 = true;
+	ml.unlock();
 
 	return folly::Unit();
 }
+
 
 
 int main()
@@ -55,10 +60,9 @@ int main()
 	Future<Unit> f3 = Future<Unit>().via(&executor);
 
 
-	auto d1 = move(f1).thenValue(do_both);
-	auto d2 = move(f2).thenValue(do_deposit);
-	auto d3 = move(f3).thenValue(do_withdraw);
-
+	auto d1 = move(f1).thenValue(func_1);
+	auto d2 = move(f2).thenValue(func_2);
+	auto d3 = move(f3).thenValue(func_3);
 
 	move(d1).get();
 	move(d2).get();
