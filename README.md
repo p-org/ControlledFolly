@@ -31,12 +31,10 @@ ControlledFolly is a "mock library" that implements Folly's API using **Nekara**
 
 
 ## Example
-Conside a sample code [FollyAccEx.cpp](https://github.com/p-org/ControlledFolly/blob/master/FollyTesting/FollyAccEx/FollyAccEx.cpp) which uses `Future` and `Lock` of Folly. There are three Future objects trying to access the two shared variables `sh_t1` and `sh_t2`. It uses locks to avoid race condition during concurrent execution.
+* Conside a sample code [FollyAccEx.cpp](https://github.com/p-org/ControlledFolly/blob/master/FollyTesting/FollyAccEx/FollyAccEx.cpp) which uses `Future` and `Lock` of Folly. There are three Future objects trying to access the two shared variables `sh_t1` and `sh_t2`. It uses locks to avoid race condition during concurrent execution.
 
-[Test-FollyAccEx.cpp](https://github.com/p-org/ControlledFolly/blob/master/FollyTesting/FollyTesting/FollyTest.cpp) shows the instrumented testing code.
+* [Test-FollyAccEx.cpp](https://github.com/p-org/ControlledFolly/blob/master/FollyTesting/FollyTesting/FollyTest.cpp) shows the instrumented testing code.
+   * `Helpers::CreateTestingServices(HTTP, "localhost", 8080, "")` starts the HTTP NekaraCppClient. 
+   * `_client->CreateThread()`, `_client->StartThread(id)` and `_client->EndThread(id)` are the API calls made to Testing services.
 
-`Helpers::CreateTestingServices(HTTP, "localhost", 8080, "")` starts the HTTP NekaraCppClient. 
-
-`_client->CreateThread()`, `_client->StartThread(id)` and `_client->EndThread(id)` are the API calls made to Testing services.
-
-[Wrapper-FollyAccEx.cpp](https://github.com/p-org/ControlledFolly/blob/master/FollyTesting/FollyTesting/FollyTesting.cpp) shows the functionality of wrapper code (`ControlledFuture.h`, `ControlledPromise.h`, and `ControlledMicroLock.h`) where the API calls `CreateThread`, `StartThread` and `EndThread` were made by the wrapper itself.
+* [Wrapper-FollyAccEx.cpp](https://github.com/p-org/ControlledFolly/blob/master/FollyTesting/FollyTesting/FollyTesting.cpp) shows the functionality of wrapper code (`ControlledFuture.h`, `ControlledPromise.h`, and `ControlledMicroLock.h`) where the API calls `CreateThread`, `StartThread` and `EndThread` were made by the wrapper itself.
