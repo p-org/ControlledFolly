@@ -25,5 +25,18 @@ ControlledFolly is a "mock library" that implements Folly's API using **Nekara**
 ## How to Use it
 
 * ControlledFolly is written in C++ 14 standard. Dependency: Folly.
+* Start the [Nekara](https://github.com/p-org/Nekara) Testing service.
 * Just include `NekaraCppClient.h`, `ControlledFuture.h`, `ControlledPromise.h` and `ControlledMicroLock.h` (as required) into your headers.
 * Instrument the test program using the Nekara API and execute the program.
+
+
+## Example
+Conside a sample code [FollyAccEx.cpp](https://github.com/p-org/ControlledFolly/blob/master/FollyTesting/FollyAccEx/FollyAccEx.cpp) which uses `Future` and `Lock` of Folly. There are three Future objects trying to access the two shared variables `sh_t1` and `sh_t2`. It uses locks to avoid race condition during concurrent execution.
+
+Now let us see the instrumented code (of the example) and where the API calls are made. [a]() shows the instrumented testing code.
+
+`Helpers::CreateTestingServices(HTTP, "localhost", 8080, "")` starts the HTTP NekaraCppClient. 
+
+
+
+[Instrumented-FollyAccEx.cpp](https://github.com/p-org/ControlledFolly/blob/master/FollyTesting/FollyTesting/FollyTesting.cpp) shows the functionality of wrapper code (`ControlledFuture.h`, `ControlledPromise.h`, and `ControlledMicroLock.h`) where the APIs `CreatetThread`, `StartThread` and `EndThread` were made by the wrapper itself.
