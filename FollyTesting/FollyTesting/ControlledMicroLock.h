@@ -67,6 +67,8 @@ public:
 
 	void try_lock()
 	{
+		NekaraCppClient* _socket = Helpers::GetTestingServices();
+		_socket->ContextSwitch();
 		_ml.try_lock();
 	}
 };
@@ -135,6 +137,9 @@ public:
 
 	void try_lock()
 	{
+		NekaraCppClient* _socket = Helpers::GetTestingServices();
+		_socket->ContextSwitch();
+
 		_ml.try_lock();
 	}
 };
@@ -202,6 +207,9 @@ public:
 
 	void try_lock()
 	{
+		NekaraCppClient* _socket = Helpers::GetTestingServices();
+		_socket->ContextSwitch();
+
 		_ml.try_lock();
 	}
 
